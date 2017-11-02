@@ -55,27 +55,30 @@ def find_linker_loops(chunk, preSS, postSS, linker_length):
 
     return linker_loops
 
-if __name__ == '__main__':
-    
-    pyrosetta.init()
-    
+def make_linker_loop_database(linker_length, preSS_pattern, postSS_pattern, output_name):
+    '''Make a linker loop database.'''
     vall_path = '/home/xingjie/Softwares/Rosetta/githubRepo/tools/fragment_tools/vall.jul19.2011.gz'
     #vall_path = '/home/xingjie/Softwares/Rosetta/githubRepo/main/database/sampling/small.vall.gz'
 
     vall_provider = rosetta.protocols.frag_picker.VallProvider()
     vall_provider.vallChunksFromLibrary(vall_path)
 
-    #abego_manager = rosetta.core.sequence.ABEGOManager()
-
     linker_loops = []
 
     for i in range(1, vall_provider.size() + 1):
         chunk = vall_provider.at(i)
        
-        linker_loops += find_linker_loops(chunk, "HHHHHH", "EEE", 4)
+        linker_loops += find_linker_loops(chunk, preSS_pattern, postSS_pattern,linker_length)
 
    
     print 'Find', len(linker_loops), ' linker loops.'
     
-    with open('linker_helix_sheet_4.json', 'w') as f:
+    with open(output_name, 'w') as f:
          json.dump(linker_loops, f)
+
+if __name__ == '__main__':
+    
+    pyrosetta.init()
+   
+    #make_linker_loop_database(4, 'HHHHHH', 'EEE', 'linker_helix_sheet_4.json')
+    make_linker_loop_database(2, 'EEE', 'EEE', 'linker_strand_strand_4.json')
