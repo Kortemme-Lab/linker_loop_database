@@ -81,4 +81,4 @@ if __name__ == '__main__':
     pyrosetta.init()
    
     #make_linker_loop_database(4, 'HHHHHH', 'EEE', 'linker_helix_sheet_4.json')
-    make_linker_loop_database(2, 'EEE', 'EEE', 'linker_strand_strand_4.json')
+    make_linker_loop_database(2, 'EEE', 'EEE', 'linker_strand_strand_2.json')
