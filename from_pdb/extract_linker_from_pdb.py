@@ -25,5 +25,6 @@ def extract_linker_from_pdb(pdb_file, chain, start, stop):
 if __name__ == '__main__':
     pyrosetta.init()
 
-    extract_linker_from_pdb('inputs/2igd.pdb', 'A', 40, 47) 
+    extract_linker_from_pdb('inputs/2igd.pdb', 'A', 25, 32) 
+    #extract_linker_from_pdb('inputs/2igd.pdb', 'A', 40, 47) 
 

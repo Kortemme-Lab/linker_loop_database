@@ -35,10 +35,10 @@ if __name__ == '__main__':
     pose.fold_tree(ft)
     rosetta.core.pose.correctly_add_cutpoint_variants(pose)
 
-    for i in range(8, 39):
+    for i in range(9, 38):
         rosetta.core.conformation.idealize_position(i, pose.conformation())
-        pose.set_phi(i, -120)
-        pose.set_psi(i, 117)
+        pose.set_phi(i, -57)
+        pose.set_psi(i, -47)
         pose.set_omega(i, 180)
 
     mutate_residues(pose, list(range(1, pose.size() + 1)), ['ALA'] * pose.size())
