@@ -6,8 +6,9 @@ import pyrosetta
 from pyrosetta import rosetta
 
 
-def get_chunk_abego(chunk, abego_manager):
+def get_chunk_abego(chunk):
     '''Get the ABEGO sequence for a vall chunk.'''
+    abego_manager = rosetta.core.sequence.ABEGOManager()
     abego_list = []
 
     for i in range(1, chunk.size() + 1):
@@ -27,7 +28,7 @@ def get_matched_positions(target, query):
     positions = [m.start() for m in re.finditer(query, target)]
     return positions
 
-def find_linker_loops(chunk, preSS, postSS, linker_length):
+def find_linker_loops(chunk, preSS, postSS, linker_pattern, abego_pattern):
     '''Find the sequence and torsions of the linker loop given the 
     definition of the preSS and postSS and linker length. 
     Return the list of linker loops. Note that the linker loop also
@@ -35,8 +36,11 @@ def find_linker_loops(chunk, preSS, postSS, linker_length):
     length linker_length + 2'''
     sequence = chunk.get_sequence()
     ss = get_chunk_ss(chunk)
+    if abego_pattern:
+        abego = get_chunk_abego(chunk)
+    linker_length = len(linker_pattern)
 
-    regex = preSS + "." * linker_length + postSS
+    regex = preSS + linker_pattern + postSS
     positions = get_matched_positions(ss, regex)
 
     linker_loops = []
@@ -46,16 +50,23 @@ def find_linker_loops(chunk, preSS, postSS, linker_length):
     res_positions = [p + len(preSS) for p in positions]
 
     for p in res_positions:
+        abego_seq = abego[p:p + len(abego_pattern)]
+        
+        if abego_pattern:
+            if None is re.match(abego_pattern, abego_seq):
+                continue
+
         phis = [chunk.at(i).phi() for i in range(p, p + linker_length + 2)]
         psis = [chunk.at(i).psi() for i in range(p, p + linker_length + 2)]
         omegas = [chunk.at(i).omega() for i in range(p, p + linker_length + 2)]
         l_seq = [chunk.at(i).aa() for i in range(p, p + linker_length + 2)]
         
-        linker_loops.append({'phis' : phis, 'psis' : psis, 'omegas' : omegas, 'sequence' : l_seq})
+        linker_loops.append({'phis' : phis, 'psis' : psis, 'omegas' : omegas, 'sequence' : l_seq,
+            'pdb_id' : chunk.get_pdb_id(), 'start_position': p})
 
     return linker_loops
 
-def make_linker_loop_database(linker_length, preSS_pattern, postSS_pattern, output_name):
+def make_linker_loop_database(linker_pattern, preSS_pattern, postSS_pattern, output_name, abego_pattern=None):
     '''Make a linker loop database.'''
     vall_path = '/home/xingjie/Softwares/Rosetta/githubRepo/tools/fragment_tools/vall.jul19.2011.gz'
     #vall_path = '/home/xingjie/Softwares/Rosetta/githubRepo/main/database/sampling/small.vall.gz'
@@ -68,7 +79,7 @@ def make_linker_loop_database(linker_length, preSS_pattern, postSS_pattern, outp
     for i in range(1, vall_provider.size() + 1):
         chunk = vall_provider.at(i)
        
-        linker_loops += find_linker_loops(chunk, preSS_pattern, postSS_pattern,linker_length)
+        linker_loops += find_linker_loops(chunk, preSS_pattern, postSS_pattern,linker_pattern, abego_pattern)
 
    
     print 'Find', len(linker_loops), ' linker loops.'
@@ -80,5 +91,13 @@ if __name__ == '__main__':
     
     pyrosetta.init()
    
-    #make_linker_loop_database(4, 'HHHHHH', 'EEE', 'linker_helix_sheet_4.json')
-    make_linker_loop_database(2, 'EEE', 'EEE', 'linker_strand_strand_2.json')
+    #make_linker_loop_database('.' * 2, 'EEE', 'EEE', 'linker_strand_strand_2.json')
+    #make_linker_loop_database('.' * 4, 'HHHHHH', 'EEE', 'linker_helix_sheet_4.json')
+    #make_linker_loop_database('.' * 4, 'EEE', 'HHHHHH', 'linker_sheet_helix_4.json')
+    #make_linker_loop_database('.' * 3, 'HHHHHH', 'EEE', 'linker_helix_sheet_3.json')
+    #make_linker_loop_database('.' * 3, 'EEE', 'HHHHHH', 'linker_sheet_helix_3.json')
+    #make_linker_loop_database('.' * 4, 'EEE', 'EEE', 'sheet_sheet_4.json')
+    
+    #make_linker_loop_database('EE....HHHHH', 'E', 'H', 'linker_sheet_helix_4_with_padding.json')
+    
+    make_linker_loop_database('EE...HHHH', 'E', 'H', 'linker_sheet_helix_3_BAB_with_padding.json', abego_pattern='BBBABAAAA')
