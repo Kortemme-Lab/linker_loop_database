@@ -64,17 +64,19 @@ def filter_linkers_by_RMSD(linker_db, all_rmsd_cutoff=2, terminal_rmsd_cutoff=1.
     pose_new = create_pose(linker_length)
 
     selected_linkers = []
+    cluster_sizes = []
 
     for i, l in enumerate(linkers):
         apply_linker_to_pose(l, pose_new)
 
         redundant = False
-        for l_old in selected_linkers:
+        for j, l_old in enumerate(selected_linkers):
             apply_linker_to_pose(l_old, pose_added)
 
             if BB_RMSD(pose_new, pose_added) < all_rmsd_cutoff \
                     and c_term_RMSD(pose_new, pose_added) < terminal_rmsd_cutoff:
                 redundant = True
+                cluster_sizes[j] += 1
 
                 #print 'Found redundant linker:\n', l, '\n', l_old, '\n'###DEBUG
                 #pose_new.dump_pdb('debug/pose_new.pdb')###DEBUG
@@ -85,7 +87,8 @@ def filter_linkers_by_RMSD(linker_db, all_rmsd_cutoff=2, terminal_rmsd_cutoff=1.
 
         if not redundant:
             selected_linkers.append(l)
-        
+            cluster_sizes.append(1)
+
         if i % 100 == 0:
             print '{0}/{1} linkers tested. Found {2} non-redundant linkers.'.format(i, len(linkers), len(selected_linkers))
             
@@ -94,13 +97,33 @@ def filter_linkers_by_RMSD(linker_db, all_rmsd_cutoff=2, terminal_rmsd_cutoff=1.
     # Dump the selected linkers
 
     with open(linker_db[:-5] + '_non_redundant.json', 'w') as f:
-         json.dump(selected_linkers, f)
-    
+        json.dump(selected_linkers, f)
+   
+    with open(linker_db[:-5] + '_cluster_sizes.json', 'w') as f:
+        json.dump(cluster_sizes, f)
+
     return selected_linkers
 
 
 if __name__ == '__main__':
     pyrosetta.init()
     
+    filter_linkers_by_RMSD('linker_helix_sheet_2.json')
+    filter_linkers_by_RMSD('linker_helix_sheet_3.json')
     filter_linkers_by_RMSD('linker_helix_sheet_4.json')
+    filter_linkers_by_RMSD('linker_helix_sheet_5.json')
+    
+    filter_linkers_by_RMSD('linker_sheet_helix_2.json')
+    filter_linkers_by_RMSD('linker_sheet_helix_3.json')
+    filter_linkers_by_RMSD('linker_sheet_helix_4.json')
+    filter_linkers_by_RMSD('linker_sheet_helix_5.json')
+    
+    filter_linkers_by_RMSD('linker_helix_helix_2.json')
+    filter_linkers_by_RMSD('linker_helix_helix_3.json')
+    filter_linkers_by_RMSD('linker_helix_helix_4.json')
+    filter_linkers_by_RMSD('linker_helix_helix_5.json')
 
+    filter_linkers_by_RMSD('linker_sheet_sheet_2.json')
+    filter_linkers_by_RMSD('linker_sheet_sheet_3.json')
+    filter_linkers_by_RMSD('linker_sheet_sheet_4.json')
+    filter_linkers_by_RMSD('linker_sheet_sheet_5.json')

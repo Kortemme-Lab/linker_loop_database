@@ -91,18 +91,25 @@ if __name__ == '__main__':
     
     pyrosetta.init()
    
-    #make_linker_loop_database('.' * 2, 'EEE', 'EEE', 'linker_strand_strand_2.json')
-    #make_linker_loop_database('.' * 4, 'EEE', 'EEE', 'sheet_sheet_4.json')
+    make_linker_loop_database('.' * 2, 'EEE', 'EEE', 'linker_sheet_sheet_2.json')
+    make_linker_loop_database('.' * 3, 'EEE', 'EEE', 'linker_sheet_sheet_3.json')
+    make_linker_loop_database('.' * 4, 'EEE', 'EEE', 'linker_sheet_sheet_4.json')
+    make_linker_loop_database('.' * 5, 'EEE', 'EEE', 'linker_sheet_sheet_5.json')
     
-    make_linker_loop_database('.' * 2, 'EEE', 'HHHHHH', 'linker_sheet_helix_2.json')
+    #make_linker_loop_database('.' * 2, 'EEE', 'HHHHHH', 'linker_sheet_helix_2.json')
     #make_linker_loop_database('.' * 3, 'EEE', 'HHHHHH', 'linker_sheet_helix_3.json')
     #make_linker_loop_database('.' * 4, 'EEE', 'HHHHHH', 'linker_sheet_helix_4.json')
-    make_linker_loop_database('.' * 5, 'EEE', 'HHHHHH', 'linker_sheet_helix_5.json')
+    #make_linker_loop_database('.' * 5, 'EEE', 'HHHHHH', 'linker_sheet_helix_5.json')
     
-    make_linker_loop_database('.' * 2, 'HHHHHH', 'EEE', 'linker_helix_sheet_2.json')
+    #make_linker_loop_database('.' * 2, 'HHHHHH', 'EEE', 'linker_helix_sheet_2.json')
     #make_linker_loop_database('.' * 3, 'HHHHHH', 'EEE', 'linker_helix_sheet_3.json')
     #make_linker_loop_database('.' * 4, 'HHHHHH', 'EEE', 'linker_helix_sheet_4.json')
-    make_linker_loop_database('.' * 5, 'HHHHHH', 'EEE', 'linker_helix_sheet_5.json')
+    #make_linker_loop_database('.' * 5, 'HHHHHH', 'EEE', 'linker_helix_sheet_5.json')
+    
+    #make_linker_loop_database('.' * 2, 'HHHHHH', 'HHHHHH', 'linker_helix_helix_2.json')
+    #make_linker_loop_database('.' * 3, 'HHHHHH', 'HHHHHH', 'linker_helix_helix_3.json')
+    #make_linker_loop_database('.' * 4, 'HHHHHH', 'HHHHHH', 'linker_helix_helix_4.json')
+    #make_linker_loop_database('.' * 5, 'HHHHHH', 'HHHHHH', 'linker_helix_helix_5.json')
     
     #make_linker_loop_database('EE....HHHHH', 'E', 'H', 'linker_sheet_helix_4_with_padding.json')
     #make_linker_loop_database('EE...HHHH', 'E', 'H', 'linker_sheet_helix_3_BAB_with_padding.json', abego_pattern='BBBABAAAA')
